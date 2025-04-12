@@ -1,16 +1,11 @@
 FROM n8nio/n8n:latest
 
-# Cria a pasta de nós customizados
-WORKDIR /home/node/.n8n/custom
+# Instala o nó customizado globalmente
+RUN npm install --location=global @n8n/n8n-nodes-langchain
 
-# Instala o pacote diretamente na pasta dos nós customizados
-RUN npm install @n8n/n8n-nodes-langchain
+# Copia os nós para a pasta correta do n8n
+RUN mkdir -p /home/node/.n8n/custom && \
+    cp -R /usr/local/lib/node_modules/@n8n/n8n-nodes-langchain /home/node/.n8n/custom/n8n-nodes-langchain
 
-# Garante que os nós personalizados sejam carregados
+# Define a pasta com extensões customizadas
 ENV N8N_CUSTOM_EXTENSIONS=/home/node/.n8n/custom
-
-# Volta para o diretório padrão de execução
-WORKDIR /data
-
-# Inicia o n8n
-CMD ["n8n"]
